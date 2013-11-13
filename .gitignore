@@ -8,8 +8,10 @@
 /.launch
 /.project
 /.settings
+/.idea
 /*.launch
 /*.tmproj
+/*.iml
 /ivy*
 /eclipse
 
