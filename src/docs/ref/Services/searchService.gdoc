@@ -1,0 +1,51 @@
+h1. search()
+
+h2. Purpose
+Executes the search based on given query and properties which should be searched.
+
+h2. Examples
+{code}
+def searchParams = [sort: 'address.street', order: 'asc', max: 10, offset: 0]
+def searchProperties = [name: "address.name", addressLine1: "address.addressLine1", addressLine2: "address.addressLine2",
+   zipCode: "address.zipCode", city: "address.city", country: "address.country", landlord: 'landlord.lastName']
+def homeList = quickSearchService.search(domainClass: Home, searchParams: searchParams,
+   searchProperties: searchProperties, query: "Lindwurmstr. 76")
+{code}
+
+h2. Description
+Parameters:
+* @domainClass@ \[Class\] (required) - Domain class which should be used for search.
+* @query@ \[String\] (required) - The actual query which should be searched.
+* @searchParams@ \[Map\] (optional) - Map of params for sort, order, max, offset, etc. Sort attribute supports nested sorting, i.e. 'home.person.name'. The map can contain also distinct key with value of property which should be distinct. This is applicable for searching in nested queries during auto-complete where the user is interested in one distinct value, [distinct: 'home.person.name']. Beware that using the distinct returns list of distinct values not domain objects.
+* @searchProperties@ \[Map\] (optional) - Persistent properties which should be used for the actual query. Key of the map is any unique key and value is a string representation of the property, nesting is also supported, i.e. [personName: 'home.person.name']. If searchProperties are not defined, all String and number persistent properties of the domain class is taken into account.
+* @customCriteria@ \[Closure\] (optional) - Create criteria closure which is injected into the search query. This closure is put into the and{...} statement. List of all created aliases (build during the nesting) is traversed back to the closure and therefore could be used.
+* @tokens@ \[List\] (optional) - List of tokens which should be used for tokenizing given query string. If not set, the default config value is used.
+* @tokenizeNumbers@ \[Boolean\] (optional) - Specifies if the query should be split for numbers and other characters. If not set, the default config value is used.
+
+Returns:
+
+Result list [PagedResultList|http://grails.org/doc/latest/api/grails/orm/PagedResultList.html] which has a getTotalCount() method to return the total number of matching records for pagination.
+
+h1. searchAutoComplete()
+
+h2. Purpose
+Executes the search based on given query and properties which should be searched. In addition it transforms the result into a list of strings based on given template string.
+
+h2. Examples
+{code}
+def searchParams = [sort: 'address.street', order: 'asc', max: 10, offset: 0]
+def searchProperties = [name: "address.name", addressLine1: "address.addressLine1", addressLine2: "address.addressLine2",
+   zipCode: "address.zipCode", city: "address.city", country: "address.country", landlordName: 'landlord.lastName']
+def autocompleteTemplate = '${name}, ${city} (${landlordName})'
+def homeList = quickSearchService.searchAutoComplete(domainClass: Home, searchParams: searchParams,
+   searchProperties: searchProperties, autocompleteTemplate: autocompleteTemplate, query: "Lindwurmstr. 76")
+{code}
+
+h2. Description
+Parameters:
+* @autocompleteTemplate@ \[String\] (optional) - [GString|http://groovy.codehaus.org/Strings+and+GString] representation of final item. The dollar values should use the keys specified in searchProperties if given or domain class property names. If this attribute is not specified, it uses toString() method of the domain class. If the searchParams attribute sets a distinct property the autocompleteTemplate is neglected because the distinct properties are returned instead.
+The searchAutoComplete() methods leverages the [search()|ref/Services/searchServiceSearch] method therefore additionally to parameters described above you should use the parameters from the leveraged method.
+
+Returns:
+
+List of Maps with structure of \[id: domainClassId, label: autocompleteTemplateResult\]. The id attribute could be null when the distinct attribute of searchParams is given.

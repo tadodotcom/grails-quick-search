@@ -1,0 +1,7 @@
+There are few configuration options for the plugin:
+
+{table}
+ *Name* | *Default* | *Description*
+ grails.plugins.quickSearch.search.tokens | ' ' | A string of characters which should be used for "tokenizing" (in other words splitting) the query string. The defualt tokenizer is a a gap which means that if the user search for 'Grails in Action' it will search for 'Grails' OR 'in' OR 'Action'.
+ grails.plugins.quickSearch.search.tokenizeNumbers | true | The Quick Search plugin supports the search for numbers and strings, this configuration option sets the default behavior of splitting the search queries into numbers and strings. If the user will search for 'Lindwurmstr. 76' the result search would be 'Lindwurmstr.' OR '76'.
+{table}

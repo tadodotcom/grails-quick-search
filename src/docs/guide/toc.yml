@@ -1,0 +1,9 @@
+introduction:
+  title: Introduction
+  whyNew: Why New Search Plugin
+  changes: Change Log
+  roadmap: Roadmap
+quickSearchService:
+  title: Quick Search Service
+configuration:
+  title: Configuration

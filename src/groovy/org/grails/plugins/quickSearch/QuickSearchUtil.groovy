@@ -54,19 +54,22 @@ class QuickSearchUtil {
       }
    }
 
-   static splitQuery(def grailsApplication, def query) {
+   static splitQuery(def grailsApplication, def query, def tokens, def tokenizeNumbers) {
       def resultQueries = []
       // use tokenizer
-      def queries = query?.tokenize(grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
+      def _tokens = tokens ?: (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
+      def queries = query?.tokenize(_tokens)
       // tokenize numbers
-      def tokenizeNumbers = TOKENIZE_NUMBERS
-      if (grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers != null)
-         tokenizeNumbers = grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers
-      if (tokenizeNumbers) {
-//         queries.each {
-//            resultQueries.addAll(/[1-9]/) // add numbers
-//            resultQueries.addAll() // add strings
-//         }
+      def _tokenizeNumbers = (tokenizeNumbers != null) ?
+         tokenizeNumbers :
+         ((!grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers?.isEmpty()) ?
+            grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers : TOKENIZE_NUMBERS)
+
+      if (_tokenizeNumbers) {
+         queries.each {
+            resultQueries.addAll(it.findAll(/\d+/)) // add numbers
+            resultQueries.addAll(it.findAll(/[^\d]+/)) // add strings
+         }
       }
       else {
          resultQueries = queries

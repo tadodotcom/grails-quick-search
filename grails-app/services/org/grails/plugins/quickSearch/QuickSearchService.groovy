@@ -1,8 +1,6 @@
 package org.grails.plugins.quickSearch
 
-import grails.gorm.PagedResultList
 import groovy.text.SimpleTemplateEngine
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 class QuickSearchService {
@@ -45,7 +43,8 @@ class QuickSearchService {
     *          If not set, the default config value is used.
     *       </li>
     *       <li>
-    *          <b>tokenizeNumbers</b> [Boolean] (optional) - TODO
+    *          <b>tokenizeNumbers</b> [Boolean] (optional) - Specifies if the query should be split for numbers and
+    *          other characters. If not set, the default config value is used.
     *       </li>
     *    </ul>
     * @return PagedResulList with searched items.
@@ -54,7 +53,7 @@ class QuickSearchService {
       def domainClass = settings.domainClass
       def searchParams = settings.searchParams
       def customClosure = settings.customClosure
-      def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query)
+      def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens, settings.tokenizeNumbers)
       def aliasesList = [] // list of created aliases
       def searchProperties = settings.searchProperties ? settings.searchProperties.values().toList() : QuickSearchUtil.getDomainClassProperties(grailsApplication, domainClass)
 
@@ -104,21 +103,22 @@ class QuickSearchService {
       // build a fake PagedResultList if distinct was not set
       if (!searchParams?.distinct) {
          // reconstruct the list with given order
-         def pagedResult = domainClass.createCriteria().list([:]) {
-            aliasBuilder.delegate = delegate
-            // sorting
-            if (searchParams?.sort && searchParams?.order) {
-               def sortAlias = aliasBuilder(domainClass, searchParams.sort, aliasesList)
-               order(sortAlias, searchParams.order)
+         if (result.size() > 0) {
+            def pagedResult = domainClass.createCriteria().list([:]) {
+               aliasBuilder.delegate = delegate
+               // sorting
+               if (searchParams?.sort && searchParams?.order) {
+                  def sortAlias = aliasBuilder(domainClass, searchParams.sort, [])
+                  order(sortAlias, searchParams.order)
+               }
+               // get by ids
+               'in'("id", result)
             }
-            // get by ids
-            'in'("id", result)
+            pagedResult.totalCount = result.totalCount // fake total count
+            return pagedResult
          }
-         pagedResult.totalCount = result.totalCount // fake total count
-         return pagedResult
-      } else {
-         return result
       }
+      return result
    }
 
    /**
