@@ -62,7 +62,7 @@ class QuickSearchUtil {
       // tokenize numbers
       def _tokenizeNumbers = (tokenizeNumbers != null) ?
          tokenizeNumbers :
-         ((!grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers?.isEmpty()) ?
+         ((grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == true || grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == false) ?
             grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers : TOKENIZE_NUMBERS)
 
       if (_tokenizeNumbers) {
