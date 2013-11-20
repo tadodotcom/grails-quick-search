@@ -43,3 +43,6 @@
 
 # other
 *.iws
+
+# grails plugin
+plugin.xml
