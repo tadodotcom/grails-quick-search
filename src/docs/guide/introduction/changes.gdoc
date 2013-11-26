@@ -1,6 +1,6 @@
 {table}
 Date | Version | Notes
-2013-11-26 | 0.2.1 | Use left join for association queries in order to search for properties which has null reference.
+2013-11-26 | 0.2.2 | Use left join for association queries in order to search for properties which has null reference.
 2013-11-26 | 0.2 | Fix of configuration value loading.
 2013-11-18 | 0.1 | Initial release. Search service for listing the result domain class objects.
 {table}
