@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Quick Search Plugin 0.1</title>
+    <title>Quick Search Plugin 0.2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -75,7 +75,7 @@ Parameters:
 <li><code>query</code> &#91;String&#93; (required) - The actual query which should be searched.</li>
 <li><code>searchParams</code> &#91;Map&#93; (optional) - Map of params for sort, order, max, offset, etc. Sort attribute supports nested sorting, i.e. 'home.person.name'. The map can contain also distinct key with value of property which should be distinct. This is applicable for searching in nested queries during auto-complete where the user is interested in one distinct value, distinct: 'home.person.name'. Beware that using the distinct returns list of distinct values not domain objects.</li>
 <li><code>searchProperties</code> &#91;Map&#93; (optional) - Persistent properties which should be used for the actual query. Key of the map is any unique key and value is a string representation of the property, nesting is also supported, i.e. personName: 'home.person.name'. If searchProperties are not defined, all String and number persistent properties of the domain class is taken into account.</li>
-<li><code>customCriteria</code> &#91;Closure&#93; (optional) - Create criteria closure which is injected into the search query. This closure is put into the and{...} statement. List of all created aliases (build during the nesting) is traversed back to the closure and therefore could be used.</li>
+<li><code>customCriteria</code> &#91;Closure&#93; (optional) - Create criteria closure which is injected into the search query. This closure is put into the and{...} statement. List of all created aliases (build during the nesting) is passed back to the closure and therefore could be leveraged.</li>
 <li><code>tokens</code> &#91;List&#93; (optional) - List of tokens which should be used for tokenizing given query string. If not set, the default config value is used.</li>
 <li><code>tokenizeNumbers</code> &#91;Boolean&#93; (optional) - Specifies if the query should be split for numbers and other characters. If not set, the default config value is used.</li>
 </ul><p class="paragraph"/>Returns:<p class="paragraph"/>Result list <a href="http://grails.org/doc/latest/api/grails/orm/PagedResultList.html" target="blank">PagedResultList</a> which has a getTotalCount() method to return the total number of matching records for pagination.<p class="paragraph"/><h1>searchAutoComplete()</h1><p class="paragraph"/><h2>Purpose</h2>
