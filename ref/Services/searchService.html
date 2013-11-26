@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Quick Search Plugin 0.2</title>
+    <title>Quick Search Plugin 0.2.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -78,7 +78,7 @@ Parameters:
 <li><code>customCriteria</code> &#91;Closure&#93; (optional) - Create criteria closure which is injected into the search query. This closure is put into the and{...} statement. List of all created aliases (build during the nesting) is passed back to the closure and therefore could be leveraged.</li>
 <li><code>tokens</code> &#91;List&#93; (optional) - List of tokens which should be used for tokenizing given query string. If not set, the default config value is used.</li>
 <li><code>tokenizeNumbers</code> &#91;Boolean&#93; (optional) - Specifies if the query should be split for numbers and other characters. If not set, the default config value is used.</li>
-</ul><p class="paragraph"/>Returns:<p class="paragraph"/>Result list <a href="http://grails.org/doc/latest/api/grails/orm/PagedResultList.html" target="blank">PagedResultList</a> which has a getTotalCount() method to return the total number of matching records for pagination.<p class="paragraph"/><h1>searchAutoComplete()</h1><p class="paragraph"/><h2>Purpose</h2>
+</ul><p class="paragraph"/>Returns:<p class="paragraph"/>Result list <a href="http://grails.org/doc/latest/api/grails/orm/PagedResultList.html" target="blank">PagedResultList</a> which has a getTotalCount() method to return the total number of matching records for pagination.<p class="paragraph"/>Association properties:<p class="paragraph"/>SearchParams as well as searchProperites allows to set association (nested) properties, i.e. "home.person.name". It supports domain class association as well as embedded classes. The hibernate LEFT JOIN is used for association in order to allow the search of properties which has their association empty, i.e. homes without a person.<p class="paragraph"/><h1>searchAutoComplete()</h1><p class="paragraph"/><h2>Purpose</h2>
 Executes the search based on given query and properties which should be searched. In addition it transforms the result into a list of strings based on given template string.<p class="paragraph"/><h2>Examples</h2>
 <div class="code"><pre>def searchParams = &#91;sort: 'address.street', order: 'asc', max: 10, offset: 0&#93;
 def searchProperties = &#91;name: <span class="java&#45;quote">"address.name"</span>, addressLine1: <span class="java&#45;quote">"address.addressLine1"</span>, addressLine2: <span class="java&#45;quote">"address.addressLine2"</span>,
