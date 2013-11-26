@@ -27,7 +27,7 @@ class QuickSearchUtil {
 
    static getPropertyByDotName(Object object, String property) {
       property.tokenize('.').inject object, {obj, prop ->
-         obj[prop]
+         obj ? obj[prop] : null
       }
    }
 

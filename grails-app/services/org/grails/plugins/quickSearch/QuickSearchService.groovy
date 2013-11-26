@@ -2,12 +2,15 @@ package org.grails.plugins.quickSearch
 
 import groovy.text.SimpleTemplateEngine
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.hibernate.criterion.CriteriaSpecification
 
 class QuickSearchService {
 
    static transactional = false
 
    def grailsApplication
+
+   private static final ALIAS_JOIN_TYPE = CriteriaSpecification.LEFT_JOIN
 
    /**
     * Executes the search based on given query and properties which should be searched.
@@ -189,7 +192,7 @@ class QuickSearchService {
                }
                // if alias was not created before
                if (!aliasesCreated.contains(aliasLabel)) {
-                  createAlias(alias, aliasLabel)
+                  createAlias(alias, aliasLabel, ALIAS_JOIN_TYPE)
                   aliasesCreated.add(aliasLabel)
                }
             } else {

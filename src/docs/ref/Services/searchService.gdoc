@@ -26,6 +26,10 @@ Returns:
 
 Result list [PagedResultList|http://grails.org/doc/latest/api/grails/orm/PagedResultList.html] which has a getTotalCount() method to return the total number of matching records for pagination.
 
+Association properties:
+
+SearchParams as well as searchProperites allows to set association (nested) properties, i.e. "home.person.name". It supports domain class association as well as embedded classes. The hibernate LEFT JOIN is used for association in order to allow the search of properties which has their association empty, i.e. homes without a person.
+
 h1. searchAutoComplete()
 
 h2. Purpose
