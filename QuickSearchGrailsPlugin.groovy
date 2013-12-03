@@ -1,4 +1,4 @@
-class GrailsQuickSearchGrailsPlugin {
+class QuickSearchGrailsPlugin {
    def version = "0.2.3"
    def grailsVersion = "2.0 > *"
 
