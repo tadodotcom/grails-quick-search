@@ -57,7 +57,7 @@ class QuickSearchUtil {
    static splitQuery(def grailsApplication, def query, def tokens, def tokenizeNumbers) {
       def resultQueries = []
       // use tokenizer
-      def _tokens = tokens ?: (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
+      def _tokens = (tokens != null) ? tokens : (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
       def queries = query?.tokenize(_tokens)
       // tokenize numbers
       def _tokenizeNumbers = (tokenizeNumbers != null) ?
