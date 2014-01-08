@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Quick Search Plugin 0.2.1</title>
+    <title>Quick Search Plugin 0.2.5</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -80,16 +80,24 @@ Parameters:
 <li><code>tokenizeNumbers</code> &#91;Boolean&#93; (optional) - Specifies if the query should be split for numbers and other characters. If not set, the default config value is used.</li>
 </ul><p class="paragraph"/>Returns:<p class="paragraph"/>Result list <a href="http://grails.org/doc/latest/api/grails/orm/PagedResultList.html" target="blank">PagedResultList</a> which has a getTotalCount() method to return the total number of matching records for pagination.<p class="paragraph"/>Association properties:<p class="paragraph"/>SearchParams as well as searchProperites allows to set association (nested) properties, i.e. "home.person.name". It supports domain class association as well as embedded classes. The hibernate LEFT JOIN is used for association in order to allow the search of properties which has their association empty, i.e. homes without a person.<p class="paragraph"/><h1>searchAutoComplete()</h1><p class="paragraph"/><h2>Purpose</h2>
 Executes the search based on given query and properties which should be searched. In addition it transforms the result into a list of strings based on given template string.<p class="paragraph"/><h2>Examples</h2>
+simple example of autocomplete:
 <div class="code"><pre>def searchParams = &#91;sort: 'address.street', order: 'asc', max: 10, offset: 0&#93;
 def searchProperties = &#91;name: <span class="java&#45;quote">"address.name"</span>, addressLine1: <span class="java&#45;quote">"address.addressLine1"</span>, addressLine2: <span class="java&#45;quote">"address.addressLine2"</span>,
    zipCode: <span class="java&#45;quote">"address.zipCode"</span>, city: <span class="java&#45;quote">"address.city"</span>, country: <span class="java&#45;quote">"address.country"</span>, landlordName: 'landlord.lastName'&#93;
 def autocompleteTemplate = '$&#123;name&#125;, $&#123;city&#125; ($&#123;landlordName&#125;)'
 def homeList = quickSearchService.searchAutoComplete(domainClass: Home, searchParams: searchParams,
+   searchProperties: searchProperties, autocompleteTemplate: autocompleteTemplate, query: <span class="java&#45;quote">"Lindwurmstr. 76"</span>)</pre></div><p class="paragraph"/>Example which uses matchResults property for autocomplete template:
+<div class="code"><pre>def searchParams = &#91;sort: 'address.street', order: 'asc', max: 10, offset: 0&#93;
+def searchProperties = &#91;name: <span class="java&#45;quote">"address.name"</span>, addressLine1: <span class="java&#45;quote">"address.addressLine1"</span>, addressLine2: <span class="java&#45;quote">"address.addressLine2"</span>,
+   zipCode: <span class="java&#45;quote">"address.zipCode"</span>, city: <span class="java&#45;quote">"address.city"</span>, country: <span class="java&#45;quote">"address.country"</span>, landlordName: 'landlord.lastName'&#93;
+def autocompleteTemplate = '$&#123;name ? name : <span class="java&#45;quote">""</span>&#125;$&#123;city ? <span class="java&#45;quote">", "</span> + city : <span class="java&#45;quote">""</span>&#125;$&#123;country ? <span class="java&#45;quote">", "</span> + country: <span class="java&#45;quote">""</span>&#125;' +
+                                 ' $&#123;(matchResults.findAll&#123;!&#91;<span class="java&#45;quote">"name"</span>, <span class="java&#45;quote">"city"</span>, <span class="java&#45;quote">"country"</span>&#93;.contains(it.key)&#125;.values())&#125;'
+def homeList = quickSearchService.searchAutoComplete(domainClass: Home, searchParams: searchParams,
    searchProperties: searchProperties, autocompleteTemplate: autocompleteTemplate, query: <span class="java&#45;quote">"Lindwurmstr. 76"</span>)</pre></div><p class="paragraph"/><h2>Description</h2>
 Parameters:
 <ul class="star">
-<li><code>autocompleteTemplate</code> &#91;String&#93; (optional) - <a href="http://groovy.codehaus.org/Strings+and+GString" target="blank">GString</a> representation of final item. The dollar values should use the keys specified in searchProperties if given or domain class property names. If this attribute is not specified, it uses toString() method of the domain class. If the searchParams attribute sets a distinct property the autocompleteTemplate is neglected because the distinct properties are returned instead.</li>
-</ul><p class="paragraph"/>The searchAutoComplete() methods leverages the ref/Services/searchServiceSearch method therefore additionally to parameters described above you should use the parameters from the leveraged method.<p class="paragraph"/>Returns:<p class="paragraph"/>List of Maps with structure of &#91;id: domainClassId, label: autocompleteTemplateResult&#93;. The id attribute could be null when the distinct attribute of searchParams is given.
+<li><code>autocompleteTemplate</code> &#91;String&#93; (optional) - <a href="http://groovy.codehaus.org/Strings+and+GString" target="blank">GString</a> representation of final item. The dollar values should use the keys specified in searchProperties if given or domain class property names. Additionally, it can use matchResults map which contains all properties which match the actual search. The map key is taken from searchProperties attribute and the value is the actual value of the object (see example above). If this attribute is not specified, it uses toString() method of the domain class. If the searchParams attribute sets a distinct property the autocompleteTemplate is neglected because the distinct properties are returned instead.</li>
+</ul><p class="paragraph"/>The searchAutoComplete() methods leverages the search() method therefore additionally to parameters described above you should use the parameters from the leveraged method.<p class="paragraph"/>Returns:<p class="paragraph"/>List of Maps with structure of &#91;id: domainClassId, label: autocompleteTemplateResult&#93;. The id attribute could be null when the distinct attribute of searchParams is given.
             </div>
         </td>
         <td id="col2">
