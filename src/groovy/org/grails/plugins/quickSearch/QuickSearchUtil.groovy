@@ -4,6 +4,8 @@ import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
+import java.text.Normalizer
+
 /**
  * Util class for searching.
  *
@@ -58,7 +60,7 @@ class QuickSearchUtil {
       def resultQueries = []
       // use tokenizer
       def _tokens = (tokens != null) ? tokens : (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
-      def queries = query?.tokenize(_tokens)
+      def queries = (_tokens?.size() > 0) ? query?.tokenize(_tokens) : [query]
       // tokenize numbers
       def _tokenizeNumbers = (tokenizeNumbers != null) ?
          tokenizeNumbers :
@@ -76,5 +78,35 @@ class QuickSearchUtil {
       }
 
       return resultQueries
+   }
+
+   static findMatchResults(Object object, def searchProperties, def queries) {
+      searchProperties.collectEntries { key, dotName ->
+         [(key): getPropertyByDotName(object, dotName)]
+      }.findAll { key, property ->
+         queries.find { query -> matchSearch(property, query)} != null
+      }
+   }
+
+   static matchSearch(def property, def query) {
+      if (property) {
+         if (property instanceof String) {
+            def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).toLowerCase();
+            def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).toLowerCase();
+            return propertyNormalized.contains(queryNormalized)
+         } else if (property instanceof Number) {
+            if (query.isNumber())
+               try {
+                  return property == query.asType(property.class)
+               }
+               catch (NumberFormatException e) {
+                  log.warn "Queried string [$query] could not be translated to number."
+               }
+         } else {
+            log.error "Unsupported class type [${property.class}] for quick search, omitting."
+         }
+      } else {
+         return false
+      }
    }
 }

@@ -36,6 +36,7 @@ h2. Purpose
 Executes the search based on given query and properties which should be searched. In addition it transforms the result into a list of strings based on given template string.
 
 h2. Examples
+simple example of autocomplete:
 {code}
 def searchParams = [sort: 'address.street', order: 'asc', max: 10, offset: 0]
 def searchProperties = [name: "address.name", addressLine1: "address.addressLine1", addressLine2: "address.addressLine2",
@@ -45,10 +46,21 @@ def homeList = quickSearchService.searchAutoComplete(domainClass: Home, searchPa
    searchProperties: searchProperties, autocompleteTemplate: autocompleteTemplate, query: "Lindwurmstr. 76")
 {code}
 
+Example which uses matchResults property for autocomplete template:
+{code}
+def searchParams = [sort: 'address.street', order: 'asc', max: 10, offset: 0]
+def searchProperties = [name: "address.name", addressLine1: "address.addressLine1", addressLine2: "address.addressLine2",
+   zipCode: "address.zipCode", city: "address.city", country: "address.country", landlordName: 'landlord.lastName']
+def autocompleteTemplate = '${name ? name : ""}${city ? ", " + city : ""}${country ? ", " + country: ""}' +
+                                 ' ${(matchResults.findAll{!["name", "city", "country"].contains(it.key)}.values())}'
+def homeList = quickSearchService.searchAutoComplete(domainClass: Home, searchParams: searchParams,
+   searchProperties: searchProperties, autocompleteTemplate: autocompleteTemplate, query: "Lindwurmstr. 76")
+{code}
+
 h2. Description
 Parameters:
-* @autocompleteTemplate@ \[String\] (optional) - [GString|http://groovy.codehaus.org/Strings+and+GString] representation of final item. The dollar values should use the keys specified in searchProperties if given or domain class property names. If this attribute is not specified, it uses toString() method of the domain class. If the searchParams attribute sets a distinct property the autocompleteTemplate is neglected because the distinct properties are returned instead.
-The searchAutoComplete() methods leverages the [search()|ref/Services/searchServiceSearch] method therefore additionally to parameters described above you should use the parameters from the leveraged method.
+* @autocompleteTemplate@ \[String\] (optional) - [GString|http://groovy.codehaus.org/Strings+and+GString] representation of final item. The dollar values should use the keys specified in searchProperties if given or domain class property names. Additionally, it can use matchResults map which contains all properties which match the actual search. The map key is taken from searchProperties attribute and the value is the actual value of the object (see example above). If this attribute is not specified, it uses toString() method of the domain class. If the searchParams attribute sets a distinct property the autocompleteTemplate is neglected because the distinct properties are returned instead.
+The searchAutoComplete() methods leverages the search() method therefore additionally to parameters described above you should use the parameters from the leveraged method.
 
 Returns:
 

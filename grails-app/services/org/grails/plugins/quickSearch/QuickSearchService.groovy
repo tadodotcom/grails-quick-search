@@ -149,6 +149,9 @@ class QuickSearchService {
          def label = ""
          if (settings.autocompleteTemplate && !settings.searchParams?.distinct) {
             def templateProp = searchProperties.collectEntries { k, v -> [(k): QuickSearchUtil.getPropertyByDotName(entry, v)] }
+            // add aditional properties
+            def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens, settings.tokenizeNumbers)
+            templateProp.matchResults = QuickSearchUtil.findMatchResults(entry, searchProperties, queries)
             // compose the template
             def engine = new SimpleTemplateEngine()
             label = engine.createTemplate(settings.autocompleteTemplate).make(templateProp).toString()
