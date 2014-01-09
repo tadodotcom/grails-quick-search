@@ -1,5 +1,5 @@
 class QuickSearchGrailsPlugin {
-   def version = "0.2.5"
+   def version = "0.2.6"
    def grailsVersion = "2.0 > *"
 
    def title = "Quick Search Plugin"
