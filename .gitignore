@@ -10,6 +10,9 @@
 /.settings
 /*.launch
 /*.tmproj
+/*.iml
+/*.ipr
+/*.iws
 /ivy*
 /eclipse
 
