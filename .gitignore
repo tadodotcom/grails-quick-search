@@ -47,3 +47,6 @@
 
 # grails plugin
 plugin.xml
+
+# OS files
+.DS_Store
