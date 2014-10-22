@@ -1,5 +1,6 @@
 package org.grails.plugins.quickSearch
 
+import org.apache.commons.lang.ClassUtils
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
@@ -26,10 +27,12 @@ class QuickSearchUtil {
 
       properties.findAll {
          def useProperty = false
-         if (strings)
+         if (strings) {
             useProperty = (it.getType() == String)
-         if (!useProperty && numbers)
-            useProperty = (Number.class.isAssignableFrom(it.getType()))
+         }
+         if (!useProperty && numbers) {
+            useProperty = (ClassUtils.isAssignable(it.type, Number.class, true))
+         }
          return useProperty
       }.collect{it.name}
    }
@@ -101,7 +104,7 @@ class QuickSearchUtil {
             def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
             def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
             return propertyNormalized.contains(queryNormalized)
-         } else if (property instanceof Number) {
+         } else if (ClassUtils.isAssignable(property, Number.class, true)) {
             if (query.isNumber())
                try {
                   return property == query.asType(property.class)
