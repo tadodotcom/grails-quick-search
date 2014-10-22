@@ -1,6 +1,7 @@
 package org.grails.plugins.quickSearch
 
 import groovy.text.SimpleTemplateEngine
+import org.apache.commons.lang.ClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.hibernate.criterion.CriteriaSpecification
 
@@ -225,7 +226,7 @@ class QuickSearchService {
       // set search
       if (propertyType == String) {
          ilike(propertyAlias, "%${queryString}%")
-      } else if (Number.class.isAssignableFrom(propertyType)) {
+      } else if (ClassUtils.isAssignable(propertyType, Number.class, true)) {
          if (queryString.isNumber())
             try {
                def number = queryString.asType(propertyType)

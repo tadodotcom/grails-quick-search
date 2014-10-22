@@ -27,6 +27,10 @@ grails.project.dependency.resolution = {
       mavenCentral()
    }
 
+   dependencies {
+      compile 'org.apache.commons:commons-lang3:3.3.2'
+   }
+
    plugins {
       build(":release:3.0.1", ":rest-client-builder:1.0.3", ":hibernate:3.6.10.4") {
          export = false
