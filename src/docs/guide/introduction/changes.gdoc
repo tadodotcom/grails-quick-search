@@ -1,6 +1,8 @@
 {table}
 Date | Version | Notes
+2014-10-22 | 0.3 | Allow to search by domain class identifier in default search. Fix the default search to include also numbers of domain class.
 2014-01-08 | 0.2.6 | SearchService.searchAutoComplete(): autocompleteTemplate attribute can use matchResults property in GString to display matched elements. For more information see [searchService|services].
+2014-01-08 | 0.2.5 | SearchService.searchAutoComplete(): autocompleteTemplate attribute can use matchResults property in GString to display matched elements. For more information see [searchService|services].
 2013-11-26 | 0.2.3 | Use left join for association queries in order to search for properties which has null reference.
 2013-11-26 | 0.2 | Fix of configuration value loading.
 2013-11-18 | 0.1 | Initial release. Search service for listing the result domain class objects.

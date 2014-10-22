@@ -12,6 +12,7 @@
 /*.launch
 /*.tmproj
 /*.iml
+/*.ipr
 /ivy*
 /eclipse
 
@@ -46,3 +47,6 @@
 
 # grails plugin
 plugin.xml
+
+# OS files
+.DS_Store

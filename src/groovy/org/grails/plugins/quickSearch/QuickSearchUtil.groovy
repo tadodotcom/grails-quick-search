@@ -19,11 +19,18 @@ class QuickSearchUtil {
    private static final TOKENIZE_NUMBERS = true
 
    static getDomainClassProperties(def grailsApplication, def domainClass, def strings = true, def numbers = true) {
-      grailsApplication.getDomainClass(domainClass.name).persistentProperties.findAll {
+      def properties = grailsApplication.getDomainClass(domainClass.name).persistentProperties
+
+      if (grailsApplication.config.grails.plugins.quickSearch.search.searchIdentifier)
+         properties += grailsApplication.getDomainClass(domainClass.name).identifier
+
+      properties.findAll {
+         def useProperty = false
          if (strings)
-            return it.getType() == String
-         if (numbers)
-            return Number.class.isAssignableFrom(it.getType())
+            useProperty = (it.getType() == String)
+         if (!useProperty && numbers)
+            useProperty = (Number.class.isAssignableFrom(it.getType()))
+         return useProperty
       }.collect{it.name}
    }
 
