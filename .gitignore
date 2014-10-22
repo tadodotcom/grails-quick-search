@@ -12,6 +12,7 @@
 /*.launch
 /*.tmproj
 /*.iml
+/*.ipr
 /ivy*
 /eclipse
 
