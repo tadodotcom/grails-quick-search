@@ -98,8 +98,8 @@ class QuickSearchUtil {
    static matchSearch(def property, def query) {
       if (property) {
          if (property instanceof String) {
-            def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).toLowerCase();
-            def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).toLowerCase();
+            def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
+            def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
             return propertyNormalized.contains(queryNormalized)
          } else if (property instanceof Number) {
             if (query.isNumber())
