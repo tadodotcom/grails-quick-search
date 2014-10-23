@@ -104,7 +104,7 @@ class QuickSearchUtil {
             def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
             def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
             return propertyNormalized.contains(queryNormalized)
-         } else if (ClassUtils.isAssignable(property, Number.class, true)) {
+         } else if (ClassUtils.isAssignable(property.class, Number.class, true)) {
             if (query.isNumber())
                try {
                   return property == query.asType(property.class)
