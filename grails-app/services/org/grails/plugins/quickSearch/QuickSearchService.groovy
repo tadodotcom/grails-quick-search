@@ -50,6 +50,10 @@ class QuickSearchService {
     *          <b>tokenizeNumbers</b> [Boolean] (optional) - Specifies if the query should be split for numbers and
     *          other characters. If not set, the default config value is used.
     *       </li>
+    *       <li>
+    *          <b>tokenWrapper</b> [Character] (optional) - Specifies the character which is used to determine no wrapping,
+    *          i.e. quotation mark "My Name" will search without tokenizing.
+    *       </li>
     *    </ul>
     * @return PagedResulList with searched items.
     */
@@ -57,7 +61,8 @@ class QuickSearchService {
       def domainClass = settings.domainClass
       def searchParams = settings.searchParams
       def customClosure = settings.customClosure
-      def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens, settings.tokenizeNumbers)
+      def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens,
+         settings.tokenizeNumbers, settings.tokenWrapper)
       def aliasesList = [] // list of created aliases
       def searchProperties = settings.searchProperties ? settings.searchProperties.values().toList() : QuickSearchUtil.getDomainClassProperties(grailsApplication, domainClass)
 
@@ -150,8 +155,9 @@ class QuickSearchService {
          def label = ""
          if (settings.autocompleteTemplate && !settings.searchParams?.distinct) {
             def templateProp = searchProperties.collectEntries { k, v -> [(k): QuickSearchUtil.getPropertyByDotName(entry, v)] }
-            // add aditional properties
-            def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens, settings.tokenizeNumbers)
+            // add additional properties
+            def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens,
+               settings.tokenizeNumbers, settings.tokenWrapper)
             templateProp.matchResults = QuickSearchUtil.findMatchResults(entry, searchProperties, queries)
             // compose the template
             def engine = new SimpleTemplateEngine()

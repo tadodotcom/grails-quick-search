@@ -21,6 +21,7 @@ Parameters:
 * @customCriteria@ \[Closure\] (optional) - Create criteria closure which is injected into the search query. This closure is put into the and{...} statement. List of all created aliases (build during the nesting) is passed back to the closure and therefore could be leveraged.
 * @tokens@ \[List\] (optional) - List of tokens which should be used for tokenizing given query string. If not set, the default config value is used.
 * @tokenizeNumbers@ \[Boolean\] (optional) - Specifies if the query should be split for numbers and other characters. If not set, the default config value is used.
+* @tokenWrapper@ \[Char] (optional) - Specifies the character which should be determined as a wrapping character of query. If this attribute is set and the query string has the same character in the start and end of the string, it doesn't tokenize the query and strips wrapper characters from the query. If not set, the default config value is used. If this feature should not be used set this attribute to empty string.
 
 Returns:
 

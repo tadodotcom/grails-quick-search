@@ -1,6 +1,7 @@
 {table}
 Date | Version | Notes
-2014-10-22 | 0.3.2 | Fix of autocomplete search with numbers
+2014-12-16 | 0.4 | Introduce tokenWrapper property for not tokenizing query strings when tokenWrapper character is used to wrap the query. For more information see [searchService|services].
+2014-10-22 | 0.3.2 | Fix of autocomplete search with numbers.
 2014-10-22 | 0.3.1 | Allow to search by primitive type numbers: int, long, etc.
 2014-10-22 | 0.3 | Allow to search by domain class identifier in default search. Fix the default search to include also numbers of domain class.
 2014-01-08 | 0.2.6 | SearchService.searchAutoComplete(): autocompleteTemplate attribute can use matchResults property in GString to display matched elements. For more information see [searchService|services].

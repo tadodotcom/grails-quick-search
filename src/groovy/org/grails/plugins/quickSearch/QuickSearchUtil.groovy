@@ -18,6 +18,7 @@ class QuickSearchUtil {
    private static final log = LogFactory.getLog(this)
    private static final TOKENS = ' '
    private static final TOKENIZE_NUMBERS = true
+   private static final TOKENIZE_WRAPPER = '"'
 
    static getDomainClassProperties(def grailsApplication, def domainClass, def strings = true, def numbers = true) {
       def properties = grailsApplication.getDomainClass(domainClass.name).persistentProperties
@@ -66,26 +67,36 @@ class QuickSearchUtil {
       }
    }
 
-   static splitQuery(def grailsApplication, def query, def tokens, def tokenizeNumbers) {
+   static splitQuery(def grailsApplication, def query, def tokens, def tokenizeNumbers, def tokenWrapper) {
       def resultQueries = []
-      // use tokenizer
-      def _tokens = (tokens != null) ? tokens : (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
-      def queries = (_tokens?.size() > 0) ? query?.tokenize(_tokens) : [query]
-      // tokenize numbers
-      def _tokenizeNumbers = (tokenizeNumbers != null) ?
-         tokenizeNumbers :
-         ((grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == true || grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == false) ?
-            grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers : TOKENIZE_NUMBERS)
+      // token wrapper
+      def _tokenWrapper = (tokenWrapper != null) ? tokenWrapper :
+         (grailsApplication.config.grails.plugins.quickSearch.search.tokenWrapper != null ?
+            grailsApplication.config.grails.plugins.quickSearch.search.tokenWrapper :
+            TOKENIZE_WRAPPER)
+      if (!_tokenWrapper.isEmpty() && query?.startsWith(_tokenWrapper) && query?.endsWith(_tokenWrapper)
+         && query?.size() > 2) {
+         resultQueries.add(query.substring(1, query.size() -1 ))
+      } else {
+         // use tokenizer
+         def _tokens = (tokens != null) ? tokens : (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
+         def queries = (_tokens?.size() > 0) ? query?.tokenize(_tokens) : [query]
+         // tokenize numbers
+         def _tokenizeNumbers = (tokenizeNumbers != null) ?
+            tokenizeNumbers :
+            ((grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == true || grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == false) ?
+               grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers : TOKENIZE_NUMBERS)
 
-      if (_tokenizeNumbers) {
-         queries.each {
-            resultQueries.addAll(it.findAll(/\d+/)) // add numbers
-            resultQueries.addAll(it.findAll(/[^\d]+/)) // add strings
+         if (_tokenizeNumbers) {
+            queries.each {
+               resultQueries.addAll(it.findAll(/\d+/)) // add numbers
+               resultQueries.addAll(it.findAll(/[^\d]+/)) // add strings
+            }
+         } else {
+            resultQueries = queries
          }
       }
-      else {
-         resultQueries = queries
-      }
+
 
       return resultQueries
    }
