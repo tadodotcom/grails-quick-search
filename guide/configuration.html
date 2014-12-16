@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Configuration 0.3.2</title>
+    <title>3 Configuration 0.4.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -73,7 +73,7 @@ functions for listing the results based on the search query.
 
                     <p><strong>Authors:</strong> Matouš Kučera</p>
 
-                    <p><strong>Version:</strong> 0.3.2</p>
+                    <p><strong>Version:</strong> 0.4.0</p>
 
                     
                 </div>
@@ -83,7 +83,7 @@ functions for listing the results based on the search query.
                 
 
 <h1 id="configuration">3 Configuration</h1>
-There are few configuration options for the plugin:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>grails.plugins.quickSearch.search.tokens</td><td>' '</td><td>A string of characters which should be used for "tokenizing" (in other words splitting) the query string. The defualt tokenizer is a a gap which means that if the user search for 'Grails in Action' it will search for 'Grails' OR 'in' OR 'Action'.</td></tr><tr class="table-even"><td>grails.plugins.quickSearch.search.tokenizeNumbers</td><td>true</td><td>The Quick Search plugin supports the search for numbers and strings, this configuration option sets the default behavior of splitting the search queries into numbers and strings. If the user will search for 'Lindwurmstr. 76' the result search would be 'Lindwurmstr.' OR '76'.</td></tr><tr class="table-odd"><td>grails.plugins.quickSearch.search.searchIdentifier</td><td>false</td><td>The Quick Search plugin supports the search for numbers and strings, by default search doesn't include domain class identifier (usually 'id'). You can set this property to true in order to search by the identifier as well. This doesn't apply if you specify the explicit search properties, there you can set your identifier to be searched manually.</td></tr></table>
+There are few configuration options for the plugin:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>grails.plugins.quickSearch.search.tokens</td><td>' '</td><td>A string of characters which should be used for "tokenizing" (in other words splitting) the query string. The defualt tokenizer is a a gap which means that if the user search for 'Grails in Action' it will search for 'Grails' OR 'in' OR 'Action'.</td></tr><tr class="table-even"><td>grails.plugins.quickSearch.search.tokenizeNumbers</td><td>true</td><td>The Quick Search plugin supports the search for numbers and strings, this configuration option sets the default behavior of splitting the search queries into numbers and strings. If the user will search for 'Lindwurmstr. 76' the result search would be 'Lindwurmstr.' OR '76'.</td></tr><tr class="table-odd"><td>grails.plugins.quickSearch.search.searchIdentifier</td><td>false</td><td>The Quick Search plugin supports the search for numbers and strings, by default search doesn't include domain class identifier (usually 'id'). You can set this property to true in order to search by the identifier as well. This doesn't apply if you specify the explicit search properties, there you can set your identifier to be searched manually.</td></tr><tr class="table-even"><td>grails.plugins.quickSearch.search.tokenWrapper</td><td>'"'</td><td>A character which determines a wrapper for a token. If this character is used in start and end of the search query. i.e. "Lindwurmstr. 76", it doesn't apply "tokenizing". If you would like to turn off this feature you can set tokenWrapper property to empty string.</td></tr></table>
 
 
 
