@@ -60,7 +60,7 @@ class QuickSearchService {
    def search(Map settings) {
       def domainClass = settings.domainClass
       def searchParams = settings.searchParams
-      def customClosure = settings.customClosure
+      def customCriteria = settings.customCriteria
       def queries = QuickSearchUtil.splitQuery(grailsApplication, settings.query, settings.tokens,
          settings.tokenizeNumbers, settings.tokenWrapper)
       def aliasesList = [] // list of created aliases
@@ -102,9 +102,9 @@ class QuickSearchService {
             }
 
             // user additional query
-            if (customClosure) {
-               customClosure.delegate = delegate
-               customClosure(aliasesList)
+            if (customCriteria) {
+               customCriteria.delegate = delegate
+               customCriteria(aliasesList)
             }
          }
       }
