@@ -1,7 +1,7 @@
 {table}
 Date       | Version | Notes
-2015-01-08 | 0.5     | Fix parameter name customCriteria of [searchService|services]. This parameter was named customClosure before and it didn't correlate to documentation and common sense. This is a braking change if you have used customClosure attribute.
-2014-12-16 | 0.4     | Introduce tokenWrapper property for not tokenizing query strings when tokenWrapper character is used to wrap the query. For more information see [searchService|services].
+2015-01-08 | 0.5.0   | Fix parameter name customCriteria of [searchService|services]. This parameter was named customClosure before and it didn't correlate to documentation and common sense. This is a braking change if you have used customClosure attribute.
+2014-12-16 | 0.4.0   | Introduce tokenWrapper property for not tokenizing query strings when tokenWrapper character is used to wrap the query. For more information see [searchService|services].
 2014-10-22 | 0.3.2   | Fix of autocomplete search with numbers.
 2014-10-22 | 0.3.1   | Allow to search by primitive type numbers: int, long, etc.
 2014-10-22 | 0.3     | Allow to search by domain class identifier in default search. Fix the default search to include also numbers of domain class.
