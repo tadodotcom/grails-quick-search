@@ -13,7 +13,7 @@ functions for listing the results based on the search query.
 
    def documentation = "http://tadodotcom.github.io/grails-quick-search"
 
-   def license = "GPL2"
+   def license = "BSD"
 
    def organization = [name: "tado GmbH", url: "http://tado.com/"]
 
