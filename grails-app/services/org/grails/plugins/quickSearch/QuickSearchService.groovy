@@ -73,8 +73,13 @@ class QuickSearchService {
 
          // sorting
          if (searchParams?.sort && searchParams?.order) {
-            def sortAlias = aliasBuilder(domainClass, searchParams.sort, aliasesList)
-            order(sortAlias, searchParams.order)
+            def sortAliases = ((String) searchParams.sort).split(",").collect {aliasBuilder(domainClass, it.trim(), aliasesList)}
+            def sortOrders = ((String) searchParams.order).split(",")
+            and {
+                sortAliases.each {
+                    order(it, sortOrders[sortAliases.indexOf(it)].trim())
+                }
+            }
          }
 
          // distinct
@@ -117,8 +122,13 @@ class QuickSearchService {
                aliasBuilder.delegate = delegate
                // sorting
                if (searchParams?.sort && searchParams?.order) {
-                  def sortAlias = aliasBuilder(domainClass, searchParams.sort, [])
-                  order(sortAlias, searchParams.order)
+                  def sortAliases = ((String) searchParams.sort).split(",").collect {aliasBuilder(domainClass, it.trim(), aliasesList)}
+                  def sortOrders = ((String) searchParams.order).split(",")
+                  and {
+                      sortAliases.each {
+                          order(it, sortOrders[sortAliases.indexOf(it)].trim())
+                      }
+                  }
                }
                // get by ids
                'in'("id", result)
