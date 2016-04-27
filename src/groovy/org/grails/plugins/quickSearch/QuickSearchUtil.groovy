@@ -123,6 +123,8 @@ class QuickSearchUtil {
                catch (NumberFormatException e) {
                   log.warn "Queried string [$query] could not be translated to number."
                }
+         } else if (ClassUtils.isAssignable(property.class, Collection.class)) {
+            return property.any{ matchSearch(it, query) }
          } else {
             log.error "Unsupported class type [${property.class}] for quick search, omitting."
          }
