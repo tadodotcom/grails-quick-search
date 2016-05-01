@@ -11,7 +11,7 @@ class QuickSearchService {
 
    def grailsApplication
 
-   private static final ALIAS_JOIN_TYPE = CriteriaSpecification.LEFT_JOIN
+   private static final int ALIAS_JOIN_TYPE = CriteriaSpecification.LEFT_JOIN
 
    /**
     * Executes the search based on given query and properties which should be searched.
@@ -55,7 +55,7 @@ class QuickSearchService {
     *          i.e. quotation mark "My Name" will search without tokenizing.
     *       </li>
     *    </ul>
-    * @return PagedResulList with searched items.
+    * @return PagedResultList with searched items.
     */
    def search(Map settings) {
       def domainClass = settings.domainClass
@@ -94,7 +94,7 @@ class QuickSearchService {
 
          and {
             // actual search query
-            if (queries?.size() > 0) {
+            if (queries) {
                or {
                   searchProperties.each { property ->
                      // build aliases for property if needed
@@ -117,7 +117,7 @@ class QuickSearchService {
       // build a fake PagedResultList if distinct was not set
       if (!searchParams?.distinct) {
          // reconstruct the list with given order
-         if (result.size() > 0) {
+         if (result) {
             def pagedResult = domainClass.createCriteria().list([:]) {
                aliasBuilder.delegate = delegate
                // sorting
@@ -162,7 +162,7 @@ class QuickSearchService {
 
       // execute the search and transform the results
       return search(settings).collect { entry ->
-         def label = ""
+         String label = ""
          if (settings.autocompleteTemplate && !settings.searchParams?.distinct) {
             def templateProp = searchProperties.collectEntries { k, v -> [(k): QuickSearchUtil.getPropertyByDotName(entry, v)] }
             // add additional properties
@@ -170,8 +170,7 @@ class QuickSearchService {
                settings.tokenizeNumbers, settings.tokenWrapper)
             templateProp.matchResults = QuickSearchUtil.findMatchResults(entry, searchProperties, queries)
             // compose the template
-            def engine = new SimpleTemplateEngine()
-            label = engine.createTemplate(settings.autocompleteTemplate).make(templateProp).toString()
+            label = new SimpleTemplateEngine().createTemplate(settings.autocompleteTemplate).make(templateProp).toString()
          } else {
             label = entry.toString()
          }
@@ -182,13 +181,13 @@ class QuickSearchService {
    /**
     * Alias builder which is responsible for criteria aliases
     */
-   def aliasBuilder = { def domainClass, def associationString, def aliasesCreated ->
+   def aliasBuilder = { domainClass, associationString, aliasesCreated ->
       def associations = associationString.split("\\.")
       def previousAlias
-      def finalAlias = null
+      def finalAlias
       def previousDomainClass = grailsApplication.getDomainClass(domainClass.name)
 
-      for (def i = 0; i < associations.size(); i++) {
+      for (int i = 0; i < associations.size(); i++) {
          def actualAlias = associations[i]
          def property = previousDomainClass?.getPropertyByName(actualAlias)
          // last is the final property
@@ -236,13 +235,13 @@ class QuickSearchService {
    /**
     * The actual query builder
     */
-   def propertyQueryBuilder = { def domainClass, def property, def propertyAlias, def queryString ->
+   def propertyQueryBuilder = { domainClass, property, String propertyAlias, String queryString ->
       def propertyType = (property instanceof GrailsDomainClassProperty) ? property.getType() : QuickSearchUtil.getPropertyType(grailsApplication, domainClass, property)
 
       // set search
       if (propertyType == String) {
          ilike(propertyAlias, "%${queryString}%")
-      } else if (ClassUtils.isAssignable(propertyType, Number.class, true)) {
+      } else if (ClassUtils.isAssignable(propertyType, Number, true)) {
          if (queryString.isNumber())
             try {
                def number = queryString.asType(propertyType)
