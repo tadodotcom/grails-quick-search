@@ -3,7 +3,6 @@ package org.grails.plugins.quickSearch
 import org.apache.commons.lang.ClassUtils
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 import java.text.Normalizer
 
@@ -16,42 +15,43 @@ import java.text.Normalizer
 class QuickSearchUtil {
 
    private static final log = LogFactory.getLog(this)
-   private static final TOKENS = ' '
-   private static final TOKENIZE_NUMBERS = true
-   private static final TOKENIZE_WRAPPER = '"'
+   private static final String TOKENS = ' '
+   private static final boolean TOKENIZE_NUMBERS = true
+   private static final String TOKENIZE_WRAPPER = '"'
 
-   static getDomainClassProperties(def grailsApplication, def domainClass, def strings = true, def numbers = true) {
-      def properties = grailsApplication.getDomainClass(domainClass.name).persistentProperties
+   static getDomainClassProperties(grailsApplication, domainClass, boolean strings = true, boolean numbers = true) {
+      def properties = [] + grailsApplication.getDomainClass(domainClass.name).persistentProperties
 
-      if (grailsApplication.config.grails.plugins.quickSearch.search.searchIdentifier)
-         properties += grailsApplication.getDomainClass(domainClass.name).identifier
+      if (getConf(grailsApplication).searchIdentifier) {
+         properties << grailsApplication.getDomainClass(domainClass.name).identifier
+      }
 
       properties.findAll {
-         def useProperty = false
+         boolean useProperty = false
          if (strings) {
-            useProperty = (it.getType() == String)
+            useProperty = it.type == String
          }
          if (!useProperty && numbers) {
-            useProperty = (ClassUtils.isAssignable(it.type, Number.class, true))
+            useProperty = ClassUtils.isAssignable(it.type, Number, true)
          }
          return useProperty
-      }.collect{it.name}
+      }.collect { it.name }
    }
 
-   static getPropertyByDotName(Object object, String property) {
-      property.tokenize('.').inject object, {obj, prop ->
+   static getPropertyByDotName(object, String property) {
+      property.tokenize('.').inject object, { obj, prop ->
          obj ? obj[prop] : null
       }
    }
 
-   static getPropertyType(def grailsApplication, def domainClass, def property) {
+   static getPropertyType(grailsApplication, domainClass, property) {
       def properties = property.split("\\.")
-      def firstPropertyName = (properties.size() > 0) ? properties[0] : null
-      def grailsDomainClass = (domainClass instanceof GrailsDomainClass) ? domainClass : grailsApplication.getDomainClass(domainClass.name)
+      String firstPropertyName = properties ? properties[0] : null
+      def grailsDomainClass = domainClass instanceof GrailsDomainClass ? domainClass : grailsApplication.getDomainClass(domainClass.name)
       def firstProperty = grailsDomainClass?.getPropertyByName(firstPropertyName)
 
       if (firstProperty?.isAssociation()) {
-         def startIndex = property.indexOf(".")
+         int startIndex = property.indexOf(".")
          if (startIndex >= 0) {
             def referencedDomainClass = firstProperty.isEmbedded() ? firstProperty.component : firstProperty.referencedDomainClass
             // recursion
@@ -63,29 +63,28 @@ class QuickSearchUtil {
          }
       }
       else {
-         firstProperty.getType()
+         firstProperty.type
       }
    }
 
-   static splitQuery(def grailsApplication, def query, def tokens, def tokenizeNumbers, def tokenWrapper) {
+   static splitQuery(grailsApplication, String query, tokens, tokenizeNumbers, tokenWrapper) {
       def resultQueries = []
       // token wrapper
       def _tokenWrapper = (tokenWrapper != null) ? tokenWrapper :
-         (grailsApplication.config.grails.plugins.quickSearch.search.tokenWrapper != null ?
-            grailsApplication.config.grails.plugins.quickSearch.search.tokenWrapper :
+         (getConf(grailsApplication).tokenWrapper != null ?
+            getConf(grailsApplication).tokenWrapper :
             TOKENIZE_WRAPPER)
       if (!_tokenWrapper.isEmpty() && query?.startsWith(_tokenWrapper) && query?.endsWith(_tokenWrapper)
          && query?.size() > 2) {
          resultQueries.add(query.substring(1, query.size() -1 ))
       } else {
          // use tokenizer
-         def _tokens = (tokens != null) ? tokens : (grailsApplication.config.grails.plugins.quickSearch.search.tokens ?: TOKENS)
-         def queries = (_tokens?.size() > 0) ? query?.tokenize(_tokens) : [query]
+         def _tokens = (tokens != null) ? tokens : (getConf(grailsApplication).tokens ?: TOKENS)
+         def queries = _tokens ? query?.tokenize(_tokens) : [query]
          // tokenize numbers
-         def _tokenizeNumbers = (tokenizeNumbers != null) ?
-            tokenizeNumbers :
-            ((grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == true || grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers == false) ?
-               grailsApplication.config.grails.plugins.quickSearch.search.tokenizeNumbers : TOKENIZE_NUMBERS)
+         def _tokenizeNumbers = (tokenizeNumbers != null) ? tokenizeNumbers :
+            (getConf(grailsApplication).tokenizeNumbers instanceof Boolean ?
+               getConf(grailsApplication).tokenizeNumbers : TOKENIZE_NUMBERS)
 
          if (_tokenizeNumbers) {
             queries.each {
@@ -97,11 +96,10 @@ class QuickSearchUtil {
          }
       }
 
-
       return resultQueries
    }
 
-   static findMatchResults(Object object, def searchProperties, def queries) {
+   static findMatchResults(object, searchProperties, queries) {
       searchProperties.collectEntries { key, dotName ->
          [(key): getPropertyByDotName(object, dotName)]
       }.findAll { key, property ->
@@ -109,27 +107,31 @@ class QuickSearchUtil {
       }
    }
 
-   static matchSearch(def property, def query) {
+   static matchSearch(property, query) {
       if (property) {
          if (property instanceof String) {
-            def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
-            def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase();
+            def propertyNormalized = Normalizer.normalize(property, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase()
+            def queryNormalized = Normalizer.normalize(query, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toLowerCase()
             return propertyNormalized.contains(queryNormalized)
-         } else if (ClassUtils.isAssignable(property.class, Number.class, true)) {
+         } else if (ClassUtils.isAssignable(property.getClass(), Number, true)) {
             if (query.isNumber())
                try {
-                  return property == query.asType(property.class)
+                  return property == query.asType(property.getClass())
                }
                catch (NumberFormatException e) {
                   log.warn "Queried string [$query] could not be translated to number."
                }
-         } else if (ClassUtils.isAssignable(property.class, Collection.class)) {
+         } else if (ClassUtils.isAssignable(property.getClass(), Collection)) {
             return property.any{ matchSearch(it, query) }
          } else {
-            log.error "Unsupported class type [${property.class}] for quick search, omitting."
+            log.error "Unsupported class type [${property.getClass()}] for quick search, omitting."
          }
       } else {
          return false
       }
    }
+
+	private static ConfigObject getConf(grailsApplication) {
+		grailsApplication.config.grails.plugins.quickSearch.search
+	}
 }
