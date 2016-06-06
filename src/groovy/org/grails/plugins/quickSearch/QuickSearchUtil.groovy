@@ -20,7 +20,7 @@ class QuickSearchUtil {
    private static final String TOKENIZE_WRAPPER = '"'
 
    static getDomainClassProperties(grailsApplication, domainClass, boolean strings = true, boolean numbers = true) {
-      def properties = [] + grailsApplication.getDomainClass(domainClass.name).persistentProperties
+      def properties = grailsApplication.getDomainClass(domainClass.name).persistentProperties as List
 
       if (getConf(grailsApplication).searchIdentifier) {
          properties << grailsApplication.getDomainClass(domainClass.name).identifier
