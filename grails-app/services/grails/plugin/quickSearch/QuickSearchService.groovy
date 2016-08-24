@@ -1,9 +1,9 @@
-package org.grails.plugins.quickSearch
+package grails.plugin.quickSearch
 
+import grails.core.GrailsDomainClassProperty
 import groovy.text.SimpleTemplateEngine
 import org.apache.commons.lang.ClassUtils
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.hibernate.criterion.CriteriaSpecification
+import org.hibernate.sql.JoinType
 
 class QuickSearchService {
 
@@ -11,7 +11,7 @@ class QuickSearchService {
 
    def grailsApplication
 
-   private static final int ALIAS_JOIN_TYPE = CriteriaSpecification.LEFT_JOIN
+   private static final int ALIAS_JOIN_TYPE = JoinType.LEFT_OUTER_JOIN.joinTypeValue
 
    /**
     * Executes the search based on given query and properties which should be searched.

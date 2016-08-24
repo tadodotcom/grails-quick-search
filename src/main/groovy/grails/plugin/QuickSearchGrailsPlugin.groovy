@@ -1,6 +1,17 @@
-class QuickSearchGrailsPlugin {
-   def version = "0.6.0"
-   def grailsVersion = "2.0 > *"
+package grails.plugin
+
+import grails.plugins.*
+
+class QuickSearchGrailsPlugin extends Plugin {
+
+   def version = "0.7.0"
+
+   // the version or versions of Grails the plugin is designed for
+   def grailsVersion = "3.1.10 > *"
+   // resources that are excluded from plugin packaging
+   def pluginExcludes = [
+           "grails-app/views/error.gsp"
+   ]
 
    def title = "Quick Search Plugin"
    def author = "Matouš Kučera"
@@ -20,4 +31,5 @@ functions for listing the results based on the search query.
    def issueManagement = [system: "Github", url: "https://github.com/tadodotcom/grails-quick-search/issues"]
 
    def scm = [url: "https://github.com/tadodotcom/grails-quick-search"]
+
 }

@@ -12,3 +12,4 @@
 grails-*.zip
 grails-*.zip.sha1
 plugin.xml
+build
