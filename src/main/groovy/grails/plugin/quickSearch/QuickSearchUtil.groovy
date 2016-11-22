@@ -1,8 +1,8 @@
-package org.grails.plugins.quickSearch
+package grails.plugin.quickSearch
 
+import grails.core.GrailsDomainClass
 import org.apache.commons.lang.ClassUtils
 import org.apache.commons.logging.LogFactory
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 import java.text.Normalizer
 
