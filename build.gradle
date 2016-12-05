@@ -65,9 +65,9 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 }
 grailsPublish {
-    // TODO: Provide values here
-    user = 'user'
-    key = 'key'
+    user = 'tado'
+    //key = 'key'  // use BINTRAY_KEY environment variable instead
+    repo = 'grails-plugins'
     githubSlug = 'tadodotcom/grails-quick-search'
     license {
         name = 'BSD'
