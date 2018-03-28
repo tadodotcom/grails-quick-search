@@ -229,7 +229,7 @@ class QuickSearchService {
          }
       }
 
-      return finalAlias
+      return finalAlias.toString()
    }
 
    /**
