@@ -235,7 +235,7 @@ class QuickSearchService {
    /**
     * The actual query builder
     */
-   def propertyQueryBuilder = { domainClass, property, String propertyAlias, String queryString ->
+   def propertyQueryBuilder = { domainClass, property, propertyAlias, String queryString ->
       def propertyType = (property instanceof GrailsDomainClassProperty) ? property.getType() : QuickSearchUtil.getPropertyType(grailsApplication, domainClass, property)
 
       // set search
