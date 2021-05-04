@@ -71,9 +71,11 @@ class QuickSearchService {
          aliasBuilder.delegate = delegate
          propertyQueryBuilder.delegate = delegate
 
+         def sortAliases = []
+
          // sorting
          if (searchParams?.sort && searchParams?.order) {
-            def sortAliases = ((String) searchParams.sort).split(",").collect {aliasBuilder(domainClass, it.trim(), aliasesList)}
+            sortAliases = ((String) searchParams.sort).split(",").collect {aliasBuilder(domainClass, it.trim(), aliasesList)}
             def sortOrders = ((String) searchParams.order).split(",")
             and {
                 sortAliases.each {
@@ -87,6 +89,8 @@ class QuickSearchService {
             if (searchParams?.distinct) {
                def distinctAlias = aliasBuilder(domainClass, searchParams.distinct, aliasesList)
                distinct(distinctAlias)
+            } else if (sortAliases) {
+               distinct(['id'] + sortAliases)
             } else {
                distinct('id')
             }
@@ -120,9 +124,12 @@ class QuickSearchService {
          if (result) {
             def pagedResult = domainClass.createCriteria().list([:]) {
                aliasBuilder.delegate = delegate
+
+               def sortAliases = []
+
                // sorting
                if (searchParams?.sort && searchParams?.order) {
-                  def sortAliases = ((String) searchParams.sort).split(",").collect {aliasBuilder(domainClass, it.trim(), aliasesList)}
+                  sortAliases = ((String) searchParams.sort).split(",").collect {aliasBuilder(domainClass, it.trim(), aliasesList)}
                   def sortOrders = ((String) searchParams.order).split(",")
                   and {
                       sortAliases.each {
@@ -131,7 +138,9 @@ class QuickSearchService {
                   }
                }
                // get by ids
-               'in'("id", result)
+               def ids = sortAliases ? result.collect { it[0] } : result
+
+               'in'("id", ids)
             }
             pagedResult.totalCount = result.totalCount // fake total count
             return pagedResult
